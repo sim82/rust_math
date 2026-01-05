@@ -1,19 +1,28 @@
-use std::f64::consts::PI;
-
 use ::num_complex::Complex;
+use std::{f64::consts::PI, mem::zeroed};
 
-fn tailor(i: u64, t: f64) -> Complex<f64> {
-    let pi_ifac = Complex::new(t, 0.0) * Complex::new(0.0, 1.0);
+fn tailor_n(i: u64, s: Complex<f64>, t: f64) -> Complex<f64> {
+    // let pi_ifac = Complex::new(t, 0.0) * Complex::new(0.0, 1.0);
 
+    let st = s * Complex::new(t, 0.0);
     match i {
         0 => Complex::new(1.0, 0.0),
-        1 => pi_ifac,
+        1 => st,
         _ => {
             let ifac = faculty(i) as f64;
             let t1 = Complex::new(1.0 / ifac, 0.0);
-            t1 * ipow(pi_ifac, i)
+            t1 * ipow(st, i)
         }
     }
+}
+
+fn tailor(n: u64, s: Complex<f64>, t: f64) -> Complex<f64> {
+    let mut acc = Complex::<f64>::ZERO;
+    for i in 0..n {
+        acc += tailor_n(i, s, t);
+        println!("t{i}: {acc}");
+    }
+    acc
 }
 
 fn ipow(a: Complex<f64>, i: u64) -> Complex<f64> {
@@ -48,10 +57,6 @@ fn main() {
     let t1 = Complex::new(PI, 0.0) * Complex::new(0.0, 1.0);
     println!("{}", t1);
 
-    let mut t = Complex::new(0.0, 0.0);
-    for i in 0..20 {
-        t += tailor(i, PI / 1.0);
-        println!("t{i}: {t}");
-    }
+    let t = tailor(20, Complex::new(0.0, 1.0), PI);
     println!("{}", t);
 }
