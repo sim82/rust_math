@@ -10,10 +10,9 @@ fn tailor(n: u64, s: Complex<f64>, t: f64) -> Complex<f64> {
         match i {
             1 => acc += st,
             _ => {
-                // let ifac = faculty(i) as f64;
                 fac *= i as f64;
                 pow *= st;
-                acc += Complex::new(1.0 / fac, 0.0) * pow;
+                acc += (1.0 / fac) * pow;
             }
         }
         println!("t{i}: {fac} {acc}");
